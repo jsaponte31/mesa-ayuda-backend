@@ -18,7 +18,6 @@ return new class extends Migration
             $table->dateTime('date_assignment')->nullable();
             $table->dateTime('date_completion')->nullable();
             $table->string('technical_description',255);
-            $table->timestamps();
         });
     }
 

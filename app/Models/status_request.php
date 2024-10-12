@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Status_request extends Model
 {
     use HasFactory;
+
+    protected $table = 'status_requests';
+
+    protected $fillable = [
+        'name',
+    ];
 }

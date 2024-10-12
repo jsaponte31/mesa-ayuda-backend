@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Help_desk extends Model
 {
     use HasFactory;
+
+    protected $table = 'help_desks';
+
+    protected $fillable = [
+        'name',
+    ];
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
+    }
 }
