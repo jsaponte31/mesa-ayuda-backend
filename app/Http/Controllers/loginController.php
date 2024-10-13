@@ -18,17 +18,21 @@ class loginController extends Controller
             return response()->json(['message' => 'Credenciales incorrectas','status' => 401]);
         }else{
             $user = User::where('username', $request->username)->first(); 
-            $token = $user->createToken('access')->plainTextToken;
-            return response()->json([
-                'message' => 'Acceso exitoso', 
-                'user' => [
-                    'username' => $user->username,
-                    'name' => $user->name,        
-                    'phone' => $user->phone,      
-                ],
-                'token' => $token,                
-                'status' => 200                   
-            ]);
+            if($user->is_active == 0){
+                return response()->json(['message' => 'Usuario inactivo', 'status' => 401]);
+            }
+            else{$token = $user->createToken('access')->plainTextToken;
+                return response()->json([
+                    'message' => 'Acceso exitoso', 
+                    'user' => [
+                        'username' => $user->username,
+                        'name' => $user->name,        
+                        'phone' => $user->phone,      
+                    ],
+                    'token' => $token,                
+                    'status' => 200                   
+                ]);
+            }
         }
     }
 
