@@ -13,6 +13,9 @@ class Request extends Model
 
     protected $fillable = [
         'description',
+        'user_id',
+        'help_desk_id',
+        'status_request_id',
     ];
 
     public function user()

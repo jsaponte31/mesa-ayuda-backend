@@ -19,4 +19,9 @@ class Help_desk extends Model
     {
         return $this->belongsTo(Area::class);
     }
+
+    public function administrater()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
