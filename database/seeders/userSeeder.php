@@ -15,6 +15,7 @@ class userSeeder extends Seeder
     {
         $user = new User();
         $user->username = 'admin';
+        $user->name = 'administrador';
         $user->password = bcrypt('admin');
         $user->phone = '123456789';
         $user->is_active = true;
