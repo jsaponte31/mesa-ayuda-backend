@@ -22,9 +22,7 @@ class requestController extends Controller
                 'status' => 200
             ]);
         }else if($rolname == 'ADMINISTRADOR DE AREA'){
-            $solicitudes = DB::table('requests as r')
-                        ->select('r.*')
-                        ->join('help_desks as h', 'r.help_desk_id', '=', 'h.id')
+            $solicitudes = ModelsRequest::join('help_desks as h', 'requests.help_desk_id', '=', 'h.id')
                         ->where('h.administrater_id','=', $user_id)
                         ->get();
             return response()->json([
@@ -32,7 +30,9 @@ class requestController extends Controller
                 'status' => 200
             ]);
         }else if($rolname == 'TECNICO'){
-            $solicitudes = Assignments::where('technical_id', $user_id)->get();
+            $solicitudes = ModelsRequest::join('assignments as a','a.request_id','=','requests.id')
+                        ->where('a.technical_id','=', $user_id)
+                        ->get();
             return response()->json([
                 'solicitudes' => $solicitudes,
                 'status' => 200
