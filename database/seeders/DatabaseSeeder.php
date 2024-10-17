@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(areaSeeder::class);
         $this->call(status_requestSeeder::class);
         $this->call(userSeeder::class);
+        $this->call(help_deskSeeder::class);
     }
 }

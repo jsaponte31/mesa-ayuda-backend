@@ -13,6 +13,6 @@ Route::post('/login', [loginController::class, 'login']);
 Route::post('/register', [loginController::class, 'register']);
 Route::middleware('auth:sanctum')->group(function () {
    Route::post('/logout', [loginController::class, 'logout']);
-   Route::get('/solicitudes/{user_id}/{rol_id}', [requestController::class, 'buscarSolicitudes']);//request del usuario
+   Route::get('/solicitudes/{user_id}/{rol_id}', [requestController::class, 'buscarSolicitudes']);//request del usuario,administrador de mesa de ayuda,tecnico
    Route::post('/crear-solicitud', [requestController::class, 'crearSolicitud']);//crear request
 });
