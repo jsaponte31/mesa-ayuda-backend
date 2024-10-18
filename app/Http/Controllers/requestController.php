@@ -13,36 +13,32 @@ use Illuminate\Support\Facades\DB;
 class requestController extends Controller
 {
     public function buscarSolicitudes($user_id, $rol_id){
+        $helDeskController = new help_deskController();
+        $dataHelpDesk = $helDeskController->buscarMesaAyuda()->original['data'];
         $rolname = Rol::select('name')->where('id', $rol_id)->first()->name;
         if($rolname == 'USUARIO'){
             $user = User::find($user_id);
             $solicitudes = $user->solicitudes;
-            return response()->json([
-                'solicitudes' => $solicitudes,
-                'status' => 200
-            ]);
         }else if($rolname == 'ADMINISTRADOR DE AREA'){
             $solicitudes = ModelsRequest::join('help_desks as h', 'requests.help_desk_id', '=', 'h.id')
                         ->where('h.administrater_id','=', $user_id)
                         ->get();
-            return response()->json([
-                'solicitudes' => $solicitudes,
-                'status' => 200
-            ]);
         }else if($rolname == 'TECNICO'){
             $solicitudes = ModelsRequest::join('assignments as a','a.request_id','=','requests.id')
                         ->where('a.technical_id','=', $user_id)
                         ->get();
-            return response()->json([
-                'solicitudes' => $solicitudes,
-                'status' => 200
-            ]);
         }
+
+        return response()->json([
+            'solicitudes' => $solicitudes,
+            'dataHelpDesk' => $dataHelpDesk,
+            'status' => 200
+        ]);
     }
 
     public function crearSolicitud(Request $request){
         $solicitud = new ModelsRequest();
-        $solicitud->description = $request->observacion;
+        $solicitud->description = $request->description;
         $solicitud->user_id = $request->user_id;
         $solicitud->help_desk_id = $request->help_desk_id;
         $solicitud->status_request_id = Status_request::where('name', 'CREADA')->first()->id;
