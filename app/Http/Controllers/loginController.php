@@ -12,11 +12,12 @@ class loginController extends Controller
 {
 
     protected $userController;
-
+    protected $rolController;
     
     public function __construct()
     {
         $this->userController = new userController();
+        $this->rolController = new rolController();
     }
 
     public function login(Request $request)
@@ -53,10 +54,10 @@ class loginController extends Controller
         if(!$userexistente){
             $user = new User();
             $user->username = $request->username;
-            $user->password = Hash::make($request->password);
             $user->name = $request->name;
+            $user->password = Hash::make($request->password);
             $user->phone = $request->phone;
-            $user->rol_id = Rol::where('name', 'USUARIO')->first()->id;
+            $user->rol_id = $this->rolController->buscarRolporNombre('USUARIO')->original['rol']->id;
             $user->is_active = 0;
             $user->save();
             return response()->json(['message' => 'Registro exitoso', 'status' => 200]);
