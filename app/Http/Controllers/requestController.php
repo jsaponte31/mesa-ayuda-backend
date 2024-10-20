@@ -12,12 +12,25 @@ use Illuminate\Support\Facades\DB;
 
 class requestController extends Controller
 {
+    protected $helDeskController;
+    protected $rolController;
+    protected $userController;
+    protected $status_requestController;
+
+    public function __construct()
+    {
+        $this->helDeskController = new help_deskController();
+        $this->rolController = new rolController();
+        $this->userController = new userController();
+        $this->status_requestController = new status_requestController();
+    }
+
     public function buscarSolicitudes($user_id, $rol_id){
-        $helDeskController = new help_deskController();
-        $dataHelpDesk = $helDeskController->buscarMesaAyuda()->original['data'];
-        $rolname = Rol::select('name')->where('id', $rol_id)->first()->name;
+        $solicitudes = [];
+        $dataHelpDesk = $this->helDeskController->buscarMesasAyuda()->original['data'];
+        $rolname = $this->rolController->buscarRolporId($rol_id)->original['rol']->name;
         if($rolname == 'USUARIO'){
-            $user = User::find($user_id);
+            $user = $this->userController->buscarUsuarioporId($user_id)->original['user'];
             $solicitudes = $user->solicitudes;
         }else if($rolname == 'ADMINISTRADOR DE AREA'){
             $solicitudes = ModelsRequest::join('help_desks as h', 'requests.help_desk_id', '=', 'h.id')
@@ -41,7 +54,7 @@ class requestController extends Controller
         $solicitud->description = $request->description;
         $solicitud->user_id = $request->user_id;
         $solicitud->help_desk_id = $request->help_desk_id;
-        $solicitud->status_request_id = Status_request::where('name', 'CREADA')->first()->id;
+        $solicitud->status_request_id = $this->status_requestController->buscarStatus_requestporNombre('CREADA')->original['status_request']->id;
         $solicitud->save();
         return response()->json([
             'message' => 'Solicitud creada exitosamente',

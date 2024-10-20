@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\Hash;
 
 class loginController extends Controller
 {
+
+    protected $userController;
+
+    
+    public function __construct()
+    {
+        $this->userController = new userController();
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->only('username', 'password');
@@ -17,7 +26,7 @@ class loginController extends Controller
         if (!Auth::attempt($credentials)) {
             return response()->json(['message' => 'Credenciales incorrectas','status' => 401]);
         }else{
-            $user = User::where('username', $request->username)->first(); 
+            $user = $this->userController->buscarUsuarioporUsername($request->username)->original['user'];
             if($user->is_active == 0){
                 return response()->json(['message' => 'Usuario inactivo', 'status' => 401]);
             }
@@ -40,7 +49,7 @@ class loginController extends Controller
 
     public function register(Request $request)
     {
-        $userexistente = User::where('username', $request->username)->first();
+        $userexistente = $this->userController->buscarUsuarioporUsername($request->username)->original['user'];
         if(!$userexistente){
             $user = new User();
             $user->username = $request->username;

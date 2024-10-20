@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class help_deskController extends Controller
 {
-    public function buscarMesaAyuda(){
+    public function buscarMesasAyuda(){
         $mesaAyuda = Help_desk::all();
         return response()->json([
             'data' => $mesaAyuda,
