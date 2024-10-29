@@ -48,7 +48,7 @@ class loginController extends Controller
             $user->name = $request->name;
             $user->password = Hash::make($request->password);
             $user->phone = $request->phone;
-            $user->rol_id = Rol::where('name', 'USUARIO')->first();
+            $user->rol_id = Rol::where('name', 'USUARIO')->first()->id;
             $user->is_active = 0;
             $user->save();
             return response()->json(['message' => 'Registro exitoso', 'status' => 200]);

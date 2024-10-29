@@ -21,7 +21,9 @@ class requestController extends Controller
             $user = User::find($user_id);
             $solicitudes = $user->solicitudes;
         }else if($rolname == 'ADMINISTRADOR DE AREA'){
-            $solicitudes = ModelsRequest::join('help_desks as h', 'requests.help_desk_id', '=', 'h.id')
+            $solicitudes = DB::table('requests as r')
+                        ->select('r.*')
+                        ->join('help_desks as h','h.id','=','r.help_desk_id')
                         ->where('h.administrater_id','=', $user_id)
                         ->get();
         }else if($rolname == 'TECNICO'){
@@ -42,7 +44,7 @@ class requestController extends Controller
         $solicitud->description = $request->description;
         $solicitud->user_id = $request->user_id;
         $solicitud->help_desk_id = $request->help_desk_id;
-        $solicitud->status_request_id = Status_request::where('name', 'CREADA')->first();
+        $solicitud->status_request_id = Status_request::where('name', 'CREADA')->first()->id;
         $solicitud->save();
         return response()->json([
             'message' => 'Solicitud creada exitosamente',
