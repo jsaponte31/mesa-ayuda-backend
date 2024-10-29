@@ -11,15 +11,6 @@ use Illuminate\Support\Facades\Hash;
 class loginController extends Controller
 {
 
-    protected $userController;
-    protected $rolController;
-    
-    public function __construct()
-    {
-        $this->userController = new userController();
-        $this->rolController = new rolController();
-    }
-
     public function login(Request $request)
     {
         $credentials = $request->only('username', 'password');
@@ -27,7 +18,7 @@ class loginController extends Controller
         if (!Auth::attempt($credentials)) {
             return response()->json(['message' => 'Credenciales incorrectas','status' => 401]);
         }else{
-            $user = $this->userController->buscarUsuarioporUsername($request->username)->original['user'];
+            $user = User::where('username', $request->username)->first();
             if($user->is_active == 0){
                 return response()->json(['message' => 'Usuario inactivo', 'status' => 401]);
             }
@@ -50,14 +41,14 @@ class loginController extends Controller
 
     public function register(Request $request)
     {
-        $userexistente = $this->userController->buscarUsuarioporUsername($request->username)->original['user'];
+        $userexistente = User::where('username', $request->username)->first();
         if(!$userexistente){
             $user = new User();
             $user->username = $request->username;
             $user->name = $request->name;
             $user->password = Hash::make($request->password);
             $user->phone = $request->phone;
-            $user->rol_id = $this->rolController->buscarRolporNombre('USUARIO')->original['rol']->id;
+            $user->rol_id = Rol::where('name', 'USUARIO')->first();
             $user->is_active = 0;
             $user->save();
             return response()->json(['message' => 'Registro exitoso', 'status' => 200]);
