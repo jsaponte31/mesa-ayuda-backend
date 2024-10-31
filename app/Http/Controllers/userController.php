@@ -35,4 +35,19 @@ class userController extends Controller
             'status' => 200
         ]);
     }
+
+    public function getUserSessionData(Request $request){
+        $userSessionData = $request->session()->get('user');
+        if(!$userSessionData){
+            return response()->json([
+                'message' => 'No hay usuario en sesion',
+                'status' => 401
+            ]);
+        }else{
+            return response()->json([
+                'user' => $userSessionData,
+                'status' => 200
+            ]);
+        }
+    }
 }

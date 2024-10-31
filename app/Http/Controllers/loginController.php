@@ -22,16 +22,19 @@ class loginController extends Controller
             if($user->is_active == 0){
                 return response()->json(['message' => 'Usuario inactivo', 'status' => 401]);
             }
-            else{$token = $user->createToken('access')->plainTextToken;
+            else{
+                $token = $user->createToken('access')->plainTextToken;
+                $userSessionData  = [
+                    'id' => $user->id,
+                    'username' => $user->username,
+                    'name' => $user->name,        
+                    'phone' => $user->phone,  
+                    'rol' => $user->rol_id,  
+                ];
+                $request->session()->put('user', $userSessionData);//guardo datos del usuario en la sesion
                 return response()->json([
                     'message' => 'Acceso exitoso', 
-                    'user' => [
-                        'id' => $user->id,
-                        'username' => $user->username,
-                        'name' => $user->name,        
-                        'phone' => $user->phone,  
-                        'rol' => $user->rol_id,  
-                    ],
+                    'user' => $userSessionData,
                     'token' => $token,                
                     'status' => 200                   
                 ]);
