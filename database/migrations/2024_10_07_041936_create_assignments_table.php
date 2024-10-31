@@ -17,7 +17,8 @@ return new class extends Migration
             $table->foreignId('technical_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade')->comment('Tecnico que gestiona la solicitud');
             $table->dateTime('date_assignment')->nullable();
             $table->dateTime('date_completion')->nullable();
-            $table->string('technical_description',255);
+            $table->string('technical_description',255)->nullable();
+            $table->timestamps();
         });
     }
 

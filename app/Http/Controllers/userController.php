@@ -23,17 +23,26 @@ class userController extends Controller
     }
 
     public function crearUsuario(Request $request){
-        $user = new User();
-        $user->username = $request->username;
-        $user->name = $request->name;
-        $user->password = Hash::make($request->password);
-        $user->phone = $request->phone;
-        $user->rol_id = $request->rol_id;
-        $user->save();
-        return response()->json([
-            'message' => 'Usuario creado exitosamente',
-            'status' => 200
-        ]);
+        $userexistente = User::where('username', $request->username)->first();
+        if(!$userexistente){
+            $user = new User();
+            $user->username = $request->username;
+            $user->name = $request->name;
+            $user->password = Hash::make($request->password);
+            $user->phone = $request->phone;
+            $user->rol_id = $request->rol_id;
+            $user->save();
+            return response()->json([
+                'message' => 'Usuario creado exitosamente',
+                'status' => 200
+            ]);
+        }else{
+            return response()->json([
+                'message' => "Ya existe el nombre de usuario $userexistente->username",
+                'status' => 401
+            ]);
+        }
+        
     }
 
     public function getUserSessionData(Request $request){

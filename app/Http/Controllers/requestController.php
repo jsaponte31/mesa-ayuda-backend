@@ -16,18 +16,26 @@ class requestController extends Controller
     public function buscarSolicitudes($user_id, $rol_id){
         $solicitudes = [];
         $dataHelpDesk = Help_desk::all();
-        $rolname = Rol::find($rol_id)->name;
-        if($rolname == 'USUARIO'){
+        $tecnicos = DB::table('users as u')
+                    ->select('u.*')
+                    ->join('rols as r','r.id','=','u.rol_id')
+                    ->where('r.name', 'TECNICO')
+                    ->get();
+        $rolName = Rol::find($rol_id)->name;
+        if($rolName == 'USUARIO'){
             $user = User::find($user_id);
             $solicitudes = $user->solicitudes;
-        }else if($rolname == 'ADMINISTRADOR DE AREA'){
+        }else if($rolName == 'ADMINISTRADOR DE AREA'){
             $solicitudes = DB::table('requests as r')
                         ->select('r.*')
                         ->join('help_desks as h','h.id','=','r.help_desk_id')
                         ->where('h.administrater_id','=', $user_id)
                         ->get();
-        }else if($rolname == 'TECNICO'){
-            $solicitudes = ModelsRequest::join('assignments as a','a.request_id','=','requests.id')
+        }else if($rolName == 'TECNICO'){
+
+            $solicitudes = DB::table('requests as r')
+                        ->select('r.*')
+                        ->join('assignments as a','a.request_id','=','r.id')
                         ->where('a.technical_id','=', $user_id)
                         ->get();
         }
@@ -35,6 +43,7 @@ class requestController extends Controller
         return response()->json([
             'solicitudes' => $solicitudes,
             'dataHelpDesk' => $dataHelpDesk,
+            'tecnicos' => $tecnicos,
             'status' => 200
         ]);
     }
@@ -48,6 +57,38 @@ class requestController extends Controller
         $solicitud->save();
         return response()->json([
             'message' => 'Solicitud creada exitosamente',
+            'status' => 200
+        ]);
+    }
+
+    public function asignarSolicitud(Request $request){
+        $asignacion = new Assignments();
+        $asignacion->request_id = $request->request_id;
+        $asignacion->technical_id = $request->technical_id;
+        $asignacion->date_assignment = now();
+        $asignacion->save();
+        $requestororig = ModelsRequest::find($request->request_id);
+        $requestororig->status_request_id = Status_request::where('name', 'ASIGNADA')->first()->id;
+        $requestororig->save();
+        $userName = User::find($request->technical_id)->name;
+        return response()->json([
+            'message' => "Solicitud al asignada exitosamente al tecnico $userName",
+            'status' => 200
+        ]);
+    }
+
+    //falta metodo para cambiar la solicitud a "en proceso"
+
+    public function finalizarSolicitud(Request $request){
+        $asignacion = Assignments::where('request_id', $request->request_id)->first();
+        $asignacion->technical_description = $request->technical_description;
+        $asignacion->date_completion = now();
+        $asignacion->save();
+        $requestororig = ModelsRequest::find($request->request_id);
+        $requestororig->status_request_id = Status_request::where('name', 'FINALIZADA')->first()->id;
+        $requestororig->save();
+        return response()->json([
+            'message' => 'Solicitud finalizada exitosamente',
             'status' => 200
         ]);
     }
