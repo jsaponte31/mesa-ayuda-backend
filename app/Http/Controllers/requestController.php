@@ -77,7 +77,15 @@ class requestController extends Controller
         ]);
     }
 
-    //falta metodo para cambiar la solicitud a "en proceso"
+    public function procesarSolicitud(Request $request){
+        $requestororig = ModelsRequest::find($request->request_id);
+        $requestororig->status_request_id = Status_request::where('name', 'EN PROCESO')->first()->id;
+        $requestororig->save();
+        return response()->json([
+            'message' => 'Solicitud cambiada de estado exitosamente',
+            'status' => 200
+        ]);
+    }
 
     public function finalizarSolicitud(Request $request){
         $asignacion = Assignments::where('request_id', $request->request_id)->first();

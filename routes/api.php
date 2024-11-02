@@ -15,6 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
    Route::post('/logout', [loginController::class, 'logout']);
    Route::post('/crear-solicitud', [requestController::class, 'crearSolicitud']);
    Route::post('/asignar-solicitud', [requestController::class, 'asignarSolicitud']);
+   Route::post('/procesar-solicitud', [requestController::class, 'procesarSolicitud']);
    Route::post('/finalizar-solicitud', [requestController::class, 'finalizarSolicitud']);
    Route::get('/solicitudes/{user_id}/{rol_id}', [requestController::class, 'buscarSolicitudes']);
    Route::get('/usuarios', [userController::class, 'buscarUsuarios']);
