@@ -2,58 +2,53 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+//Añadimos la clase JWTSubject 
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+//Añadimos la implementación de JWT en nuestro modelo
+class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable,HasApiTokens;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var array
      */
+
+    const CREATED_AT = 'createdAt';
+    public $timestamps = false;
+
     protected $fillable = [
-        'username',
-        'name',
-        'password',
-        'phone',
+        'username', 'password'
     ];
 
-    public function rol()
-    {
-        return $this->belongsTo(Rol::class);
-    }
-
-    public function solicitudes()
-    {
-        return $this->hasMany(Request::class);
-    }
-
     /**
-     * The attributes that should be hidden for serialization.
+     * The attributes that should be hidden for arrays.
      *
-     * @var array<int, string>
+     * @var array
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password', 'remember_token',
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast to native types.
      *
-     * @return array<string, string>
+     * @var array
      */
-    protected function casts(): array
+
+    /*
+        Añadiremos estos dos métodos
+    */
+    public function getJWTIdentifier()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->getKey();
+    }
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }

@@ -11,7 +11,7 @@ Route::middleware([\Illuminate\Session\Middleware\StartSession::class])->group(f
    Route::get('/session-data', [userController::class, 'getUserSessionData']);
 });
 Route::post('/register', [loginController::class, 'register']);
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:api')->group(function () {
    Route::post('/logout', [loginController::class, 'logout']);
    Route::post('/crear-solicitud', [requestController::class, 'crearSolicitud']);
    Route::post('/asignar-solicitud', [requestController::class, 'asignarSolicitud']);

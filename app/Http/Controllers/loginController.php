@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class loginController extends Controller
 {
@@ -14,7 +15,7 @@ class loginController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('username', 'password');
-
+        
         if (!Auth::attempt($credentials)) {
             return response()->json(['message' => 'Credenciales incorrectas','status' => 401]);
         }else{
@@ -23,7 +24,9 @@ class loginController extends Controller
                 return response()->json(['message' => 'Usuario inactivo', 'status' => 401]);
             }
             else{
-                $token = $user->createToken('access')->plainTextToken;
+                
+                // $token = $user->createToken('access')->plainTextToken;
+                $token = JWTAuth::attempt($credentials);
                 $userSessionData  = [
                     'id' => $user->id,
                     'username' => $user->username,
