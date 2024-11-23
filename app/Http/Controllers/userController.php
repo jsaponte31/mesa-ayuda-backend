@@ -47,6 +47,7 @@ class userController extends Controller
 
     public function getUserSessionData(Request $request){
         $userSessionData = $request->session()->get('user');
+        var_dump($userSessionData);
         if(!$userSessionData){
             return response()->json([
                 'message' => 'No hay usuario en sesion',
