@@ -58,7 +58,6 @@ class userController extends Controller
             'rol' => $user->rol_id,  
         ];
         return response()->json([
-            'message' => 'Acceso exitoso', 
             'user' => $userSessionData,
             'status' => 200                   
         ]);;
