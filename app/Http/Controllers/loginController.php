@@ -11,6 +11,10 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class loginController extends Controller
 {
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api', ['except' => ['login']]);
+    // }
 
     public function login(Request $request)
     {
@@ -66,7 +70,8 @@ class loginController extends Controller
     public function logout(Request $request)
     {
         
-        $request->user()->currentAccessToken()->delete();
+        // $request->user()->
+        JWTAuth::invalidate(JWTAuth::getToken());
     
         return response()->json(['message' => 'Cierre de sesion exitoso'], 200);
     }

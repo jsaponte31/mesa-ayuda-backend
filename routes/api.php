@@ -6,7 +6,7 @@ use App\Http\Controllers\requestController;
 use App\Http\Controllers\userController;
 use Illuminate\Http\Request;
 
-Route::group(function () {
+Route::middleware([\Illuminate\Session\Middleware\StartSession::class])->group(function () {
    Route::post('/login', [LoginController::class, 'login']);
 });
 Route::post('/register', [loginController::class, 'register']);
