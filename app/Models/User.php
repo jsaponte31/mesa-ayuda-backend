@@ -22,8 +22,18 @@ class User extends Authenticatable implements JWTSubject
     public $timestamps = false;
 
     protected $fillable = [
-        'username', 'password'
+        'username', 'password','name','phone',
     ];
+
+    public function rol()
+    {
+        return $this->belongsTo(Rol::class);
+    }
+
+    public function solicitudes()
+    {
+        return $this->hasMany(Request::class);
+    }
 
     /**
      * The attributes that should be hidden for arrays.
