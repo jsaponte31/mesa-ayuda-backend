@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Help_desk;
 use App\Models\Rol;
 use App\Models\User;
+use Tymon\JWTAuth\Contracts\Providers\Auth as authjwt;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -46,18 +48,19 @@ class userController extends Controller
     }
 
     public function getUserSessionData(Request $request){
-        $userSessionData = $request->session()->get('user');
-        // var_dump($userSessionData);
-        if(!$userSessionData){
-            return response()->json([
-                'message' => 'No hay usuario en sesion',
-                'status' => 401
-            ]);
-        }else{
-            return response()->json([
-                'user' => $userSessionData,
-                'status' => 200
-            ]);
-        }
+        $iduser = Auth::id();
+        $user = User::find($iduser);
+        $userSessionData  = [
+            'id' => $user->id,
+            'username' => $user->username,
+            'name' => $user->name,        
+            'phone' => $user->phone,  
+            'rol' => $user->rol_id,  
+        ];
+        return response()->json([
+            'message' => 'Acceso exitoso', 
+            'user' => $userSessionData,
+            'status' => 200                   
+        ]);;
     }
 }

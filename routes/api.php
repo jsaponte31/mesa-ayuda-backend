@@ -6,12 +6,12 @@ use App\Http\Controllers\requestController;
 use App\Http\Controllers\userController;
 use Illuminate\Http\Request;
 
-Route::middleware([\Illuminate\Session\Middleware\StartSession::class])->group(function () {
+Route::group(function () {
    Route::post('/login', [LoginController::class, 'login']);
-   Route::get('/session-data', [userController::class, 'getUserSessionData']);
 });
 Route::post('/register', [loginController::class, 'register']);
 Route::middleware('auth:api')->group(function () {
+   Route::get('/session-data', [userController::class, 'getUserSessionData']);
    Route::post('/logout', [loginController::class, 'logout']);
    Route::post('/crear-solicitud', [requestController::class, 'crearSolicitud']);
    Route::post('/asignar-solicitud', [requestController::class, 'asignarSolicitud']);
