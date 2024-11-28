@@ -24,4 +24,9 @@ class Help_desk extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function technicians()
+    {
+        return $this->belongsToMany(User::class, 'tecnicos_mesas_relacion', 'help_desk_id', 'tecnico_id')->withTimestamps();
+    }
 }

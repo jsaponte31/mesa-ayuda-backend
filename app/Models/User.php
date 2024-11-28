@@ -22,7 +22,10 @@ class User extends Authenticatable implements JWTSubject
     public $timestamps = false;
 
     protected $fillable = [
-        'username', 'password','name','phone',
+        'username',
+        'password',
+        'name',
+        'phone',
     ];
 
     public function rol()
@@ -35,13 +38,19 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Request::class);
     }
 
+    public function helpDesks()
+    {
+        return $this->belongsToMany(Help_desk::class, 'tecnicos_mesas_relacion', 'tecnico_id', 'help_desk_id')->withTimestamps();
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     /**

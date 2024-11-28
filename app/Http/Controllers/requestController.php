@@ -15,24 +15,33 @@ class requestController extends Controller
 {
     public function buscarSolicitudes($user_id, $rol_id){
         $solicitudes = [];
-        $dataHelpDesk = Help_desk::all();
-        $tecnicos = DB::table('users as u')
-                    ->select('u.*')
-                    ->join('rols as r','r.id','=','u.rol_id')
-                    ->where('r.name', 'TECNICO')
-                    ->get();
+        $dataHelpDesk = [];
+        $tecnicos = [];
         $rolName = Rol::find($rol_id)->name;
         if($rolName == 'USUARIO'){
             $user = User::find($user_id);
             $solicitudes = $user->solicitudes;
+            $dataHelpDesk = Help_desk::all();
         }else if($rolName == 'ADMINISTRADOR DE AREA'){
             $solicitudes = DB::table('requests as r')
-                        ->select('r.*')
+                        ->select('r.*','a.technical_id as id_tecnico')
                         ->join('help_desks as h','h.id','=','r.help_desk_id')
+                        ->leftJoin('assignments as a','a.request_id','=','r.id')
                         ->where('h.administrater_id','=', $user_id)
                         ->get();
+            $mesa_id = DB::table('help_desks as h')
+                        ->select('h.id')
+                        ->where('h.administrater_id','=', $user_id)
+                        ->first()->id;
+            $tecnicos = DB::table('users as u')
+                        ->select('u.id','u.name','u.username','u.phone')
+                        ->join('rols as r','r.id','=','u.rol_id')
+                        ->join('tecnicos_mesas_relacion as tmr','tmr.tecnico_id','=','u.id')
+                        ->where('r.name', 'TECNICO')
+                        ->where('u.is_active', 1)
+                        ->where('tmr.help_desk_id', $mesa_id)
+                        ->get();
         }else if($rolName == 'TECNICO'){
-
             $solicitudes = DB::table('requests as r')
                         ->select('r.*')
                         ->join('assignments as a','a.request_id','=','r.id')
