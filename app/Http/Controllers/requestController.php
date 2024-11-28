@@ -20,7 +20,12 @@ class requestController extends Controller
         $rolName = Rol::find($rol_id)->name;
         if($rolName == 'USUARIO'){
             $user = User::find($user_id);
-            $solicitudes = $user->solicitudes;
+            $solicitudes = DB::table('requests as r')
+                        ->select('r.*','a.technical_id as id_tecnico','u.name as tecnico','u.phone as telefono_tecnico')
+                        ->leftJoin('assignments as a','a.request_id','=','r.id')
+                        ->leftJoin('users as u','u.id','=','a.technical_id')
+                        ->where('r.user_id','=', $user_id)
+                        ->get();
             $dataHelpDesk = Help_desk::all();
         }else if($rolName == 'ADMINISTRADOR DE AREA'){
             $solicitudes = DB::table('requests as r')
