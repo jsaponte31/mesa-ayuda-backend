@@ -24,9 +24,10 @@ class requestController extends Controller
             $dataHelpDesk = Help_desk::all();
         }else if($rolName == 'ADMINISTRADOR DE AREA'){
             $solicitudes = DB::table('requests as r')
-                        ->select('r.*','a.technical_id as id_tecnico')
+                        ->select('r.*','a.technical_id as id_tecnico','u.name as tecnico','u.phone as telefono_tecnico')
                         ->join('help_desks as h','h.id','=','r.help_desk_id')
                         ->leftJoin('assignments as a','a.request_id','=','r.id')
+                        ->leftJoin('users as u','u.id','=','a.technical_id')
                         ->where('h.administrater_id','=', $user_id)
                         ->get();
             $mesa_id = DB::table('help_desks as h')

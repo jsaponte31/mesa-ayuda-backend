@@ -20,4 +20,5 @@ Route::middleware('auth:api')->group(function () {
    Route::get('/solicitudes/{user_id}/{rol_id}', [requestController::class, 'buscarSolicitudes']);
    Route::get('/usuarios', [userController::class, 'buscarUsuarios']);
    Route::post('/crear-usuario', [userController::class, 'crearUsuario']);
+   Route::post('/actualizar-usuario', [userController::class, 'actualizarUsuario']);
 });
