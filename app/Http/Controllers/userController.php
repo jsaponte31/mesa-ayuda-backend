@@ -71,6 +71,7 @@ class userController extends Controller
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->rol_id = $request->rol_id;
+        $user->is_active = $request->estado;
         $user->save();
         return response()->json([
             'message' => 'Usuario actualizado exitosamente',
