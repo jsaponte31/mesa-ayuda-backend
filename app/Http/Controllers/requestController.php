@@ -21,7 +21,7 @@ class requestController extends Controller
         if($rolName == 'USUARIO'){
             $user = User::find($user_id);
             $solicitudes = DB::table('requests as r')
-                        ->select('r.*','a.technical_id as id_tecnico','u.name as tecnico','u.phone as telefono_tecnico')
+                        ->select('r.*','a.technical_id as id_tecnico','u.name as tecnico','u.phone as telefono_tecnico','a.technical_description as descripcion_tecnico')
                         ->leftJoin('assignments as a','a.request_id','=','r.id')
                         ->leftJoin('users as u','u.id','=','a.technical_id')
                         ->where('r.user_id','=', $user_id)
@@ -29,7 +29,7 @@ class requestController extends Controller
             $dataHelpDesk = Help_desk::all();
         }else if($rolName == 'ADMINISTRADOR DE AREA'){
             $solicitudes = DB::table('requests as r')
-                        ->select('r.*','a.technical_id as id_tecnico','u.name as tecnico','u.phone as telefono_tecnico')
+                        ->select('r.*','a.technical_id as id_tecnico','u.name as tecnico','u.phone as telefono_tecnico','a.technical_description as descripcion_tecnico')
                         ->join('help_desks as h','h.id','=','r.help_desk_id')
                         ->leftJoin('assignments as a','a.request_id','=','r.id')
                         ->leftJoin('users as u','u.id','=','a.technical_id')
@@ -49,7 +49,7 @@ class requestController extends Controller
                         ->get();
         }else if($rolName == 'TECNICO'){
             $solicitudes = DB::table('requests as r')
-                        ->select('r.*')
+                        ->select('r.*','a.technical_description as descripcion_tecnico')
                         ->join('assignments as a','a.request_id','=','r.id')
                         ->where('a.technical_id','=', $user_id)
                         ->get();
